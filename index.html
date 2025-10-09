@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Order Form App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+        input[type="text"] {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 8px;
+            font-size: 16px;
+            padding: 5px 0;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-bottom-color: #4CAF50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        td input {
+            width: 100%;
+            border: none;
+            padding: 8px;
+            font-size: 14px;
+        }
+        td input:focus {
+            outline: 2px solid #4CAF50;
+            background-color: #f0f8f0;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+        .print-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .print-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .clear-btn {
+            background-color: #f44336;
+            color: white;
+            flex-basis: 100%;
+        }
+        .clear-btn:hover {
+            background-color: #da190b;
+        }
+        .remove-btn {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-btn:hover {
+            background-color: #e64a19;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+        .copyright {
+            font-size: 12px;
+            color: #999;
+        }
+        @media (min-width: 768px) {
+            .clear-btn {
+                flex-basis: auto;
+            }
+        }
+        @media print {
+            body {
+                background-color: white;
+                padding: 5px;
+                margin: 0;
+            }
+            h1 {
+                margin-bottom: 15px;
+                font-size: 20px;
+            }
+            .form-section {
+                box-shadow: none;
+                padding: 0;
+                margin-bottom: 10px;
+            }
+            label {
+                margin-top: 5px;
+                font-size: 12px;
+            }
+            input[type="text"] {
+                margin-bottom: 5px;
+                padding: 3px 0;
+                font-size: 14px;
+            }
+            table {
+                margin-top: 10px;
+            }
+            th, td {
+                padding: 5px;
+                font-size: 12px;
+            }
+            button {
+                display: none;
+            }
+            .button-group {
+                display: none;
+            }
+            .remove-btn {
+                display: none;
+            }
+            footer {
+                display: none;
+            }
+            th {
+                background-color: #f0f0f0 !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+            }
+            tr:empty {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>BULK ORDER TUT STUDENT 2025</h1>
+    
+    <div class="form-section">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter your full name">
+        
+        <label for="studentNo">Student No:</label>
+        <input type="text" id="studentNo" placeholder="Enter student number">
+        
+        <label for="yearGroup">Year Group:</label>
+        <input type="text" id="yearGroup" placeholder="Enter year group">
+        
+        <label for="cellNo">Cell No:</label>
+        <input type="text" id="cellNo" placeholder="Enter cell phone number">
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%">CODE</th>
+                <th style="width: 50%">DESCRIPTION</th>
+                <th style="width: 15%">QTY</th>
+                <th style="width: 10%"></th>
+            </tr>
+        </thead>
+        <tbody id="orderTable">
+        </tbody>
+    </table>
+    
+    <div class="button-group">
+        <button class="print-btn" onclick="addRow()">+ Add Row</button>
+        <button class="print-btn" onclick="printForm()">Print Form</button>
+        <button class="clear-btn" onclick="clearForm()">Clear All</button>
+    </div>
+
+    <footer>
+        <p>Developed by <strong>Lwazi Mpangase</strong></p>
+        <p class="copyright">&copy; 2025 All Rights Reserved</p>
+    </footer>
+
+    <script>
+        const tableBody = document.getElementById('orderTable');
+        
+        function createRow() {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="code" placeholder="Code"></td>
+                <td><input type="text" class="description" placeholder="Description"></td>
+                <td><input type="text" class="qty" placeholder="Qty"></td>
+                <td><button class="remove-btn" onclick="removeRow(this)">×</button></td>
+            `;
+            return row;
+        }
+
+        function addRow() {
+            tableBody.appendChild(createRow());
+        }
+
+        function removeRow(btn) {
+            btn.closest('tr').remove();
+        }
+
+        function printForm() {
+            // Check if any data is entered
+            const name = document.getElementById('name').value.trim();
+            const studentNo = document.getElementById('studentNo').value.trim();
+            const yearGroup = document.getElementById('yearGroup').value.trim();
+            const cellNo = document.getElementById('cellNo').value.trim();
+            
+            const rows = tableBody.querySelectorAll('tr');
+            let hasTableData = false;
+            rows.forEach(row => {
+                const code = row.querySelector('.code').value.trim();
+                const desc = row.querySelector('.description').value.trim();
+                const qty = row.querySelector('.qty').value.trim();
+                if (code || desc || qty) {
+                    hasTableData = true;
+                }
+            });
+            
+            if (!name && !studentNo && !yearGroup && !cellNo && !hasTableData) {
+                alert('Please enter some data before printing.');
+                return;
+            }
+            
+            window.print();
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all fields?')) {
+                document.getElementById('name').value = '';
+                document.getElementById('studentNo').value = '';
+                document.getElementById('yearGroup').value = '';
+                document.getElementById('cellNo').value = '';
+                
+                tableBody.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>
