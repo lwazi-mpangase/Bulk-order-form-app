@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/Favicons/android-chrome-192x192.png" type="image/x-icon">
+    <meta name="theme-color" content="#ffffff">
+
     <title>Bulk Order Form App</title>
     <style>
         body {
@@ -42,7 +50,7 @@
         }
         input[type="text"]:focus {
             outline: none;
-            border-bottom-color: #4CAF50;
+            border-bottom-color: #333;
         }
         table {
             width: 100%;
@@ -56,7 +64,7 @@
             text-align: left;
         }
         th {
-            background-color: #4CAF50;
+            background-color: #333;
             color: white;
             font-weight: bold;
         }
@@ -67,8 +75,25 @@
             font-size: 14px;
         }
         td input:focus {
-            outline: 2px solid #4CAF50;
-            background-color: #f0f8f0;
+            outline: 2px solid #333;
+            background-color: #f5f5f5;
+        }
+        .add-row-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .add-row-btn:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .button-group {
             text-align: center;
@@ -89,21 +114,39 @@
             min-width: 150px;
         }
         .print-btn {
-            background-color: #4CAF50;
+            background-color: #2196F3;
             color: white;
         }
         .print-btn:hover {
-            background-color: #45a049;
+            background-color: #0b7dda;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .share-btn {
+            background-color: #333;
+            color: white;
+        }
+        .share-btn:hover {
+            background-color: #555;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .clear-btn {
-            background-color: #f44336;
+            background-color: #666;
             color: white;
             flex-basis: 100%;
         }
         .clear-btn:hover {
-            background-color: #da190b;
+            background-color: #444;
+        }
+        .download-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .download-btn:hover {
+            background-color: #0b7dda;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .remove-btn {
             background-color: #ff5722;
@@ -182,6 +225,9 @@
             .remove-btn {
                 display: none;
             }
+            .add-row-btn {
+                display: none;
+            }
             footer {
                 display: none;
             }
@@ -195,6 +241,8 @@
             }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <h1>BULK ORDER TUT STUDENT 2025</h1>
@@ -226,14 +274,15 @@
         </tbody>
     </table>
     
+    <button class="add-row-btn" onclick="addRow()">+ Add Row</button>
+    
     <div class="button-group">
-        <button class="print-btn" onclick="addRow()">+ Add Row</button>
-        <button class="print-btn" onclick="printForm()">Print Form</button>
+        <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
         <button class="clear-btn" onclick="clearForm()">Clear All</button>
     </div>
 
     <footer>
-        <p>Developed by <strong>Lwazi Mpangase</strong></p>
+        <p>Developed by <strong>[Your Name]</strong></p>
         <p class="copyright">&copy; 2025 All Rights Reserved</p>
     </footer>
 
@@ -259,30 +308,151 @@
             btn.closest('tr').remove();
         }
 
-        function printForm() {
-            // Check if any data is entered
+        function downloadPDF() {
+            // Check if all fields are filled
             const name = document.getElementById('name').value.trim();
             const studentNo = document.getElementById('studentNo').value.trim();
             const yearGroup = document.getElementById('yearGroup').value.trim();
             const cellNo = document.getElementById('cellNo').value.trim();
             
+            // Validate required fields
+            if (!name) {
+                alert('Please enter your Name.');
+                document.getElementById('name').focus();
+                return;
+            }
+            if (!studentNo) {
+                alert('Please enter your Student Number.');
+                document.getElementById('studentNo').focus();
+                return;
+            }
+            if (!yearGroup) {
+                alert('Please enter your Year Group.');
+                document.getElementById('yearGroup').focus();
+                return;
+            }
+            if (!cellNo) {
+                alert('Please enter your Cell Number.');
+                document.getElementById('cellNo').focus();
+                return;
+            }
+            
+            // Check if at least one order item is filled
             const rows = tableBody.querySelectorAll('tr');
-            let hasTableData = false;
+            let hasCompleteRow = false;
+            let hasIncompleteRow = false;
+            
             rows.forEach(row => {
                 const code = row.querySelector('.code').value.trim();
                 const desc = row.querySelector('.description').value.trim();
                 const qty = row.querySelector('.qty').value.trim();
+                
                 if (code || desc || qty) {
-                    hasTableData = true;
+                    // Check if this row is complete
+                    if (code && desc && qty) {
+                        hasCompleteRow = true;
+                    } else {
+                        hasIncompleteRow = true;
+                    }
                 }
             });
             
-            if (!name && !studentNo && !yearGroup && !cellNo && !hasTableData) {
-                alert('Please enter some data before printing.');
+            if (!hasCompleteRow) {
+                alert('Please add at least one complete order item (CODE, DESCRIPTION, and QTY must all be filled).');
                 return;
             }
             
-            window.print();
+            if (hasIncompleteRow) {
+                alert('All order rows must be complete. Please fill in CODE, DESCRIPTION, and QTY for each item, or remove incomplete rows.');
+                return;
+            }
+            
+            // Hide buttons and footer temporarily
+            const buttons = document.querySelectorAll('button');
+            const footer = document.querySelector('footer');
+            const buttonGroup = document.querySelector('.button-group');
+            
+            buttons.forEach(btn => btn.style.display = 'none');
+            if (footer) footer.style.display = 'none';
+            if (buttonGroup) buttonGroup.style.display = 'none';
+            
+            // Use html2canvas and jsPDF to create PDF
+            const { jsPDF } = window.jspdf;
+            
+            // Temporarily adjust body styling for better PDF capture
+            const originalMaxWidth = document.body.style.maxWidth;
+            const originalPadding = document.body.style.padding;
+            const originalMargin = document.body.style.margin;
+            
+            document.body.style.maxWidth = '750px';
+            document.body.style.padding = '20px';
+            document.body.style.margin = '0 auto';
+            
+            html2canvas(document.body, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                width: 750,
+                windowWidth: 750,
+                x: 0,
+                y: 0
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                // A4 dimensions
+                const pdfWidth = 210;
+                const pdfHeight = 297;
+                
+                // Calculate image dimensions to fit PDF with margins
+                const margin = 15;
+                const contentWidth = pdfWidth - (2 * margin);
+                const contentHeight = (canvas.height * contentWidth) / canvas.width;
+                
+                let yPosition = margin;
+                let remainingHeight = contentHeight;
+                let sourceY = 0;
+                
+                // Add first page
+                const firstPageHeight = Math.min(contentHeight, pdfHeight - 2 * margin);
+                pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight, '', 'FAST');
+                
+                remainingHeight -= (pdfHeight - 2 * margin);
+                
+                // Add additional pages if content overflows
+                while (remainingHeight > 0) {
+                    pdf.addPage();
+                    yPosition = -(contentHeight - remainingHeight) + margin;
+                    pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, contentHeight, '', 'FAST');
+                    remainingHeight -= (pdfHeight - 2 * margin);
+                }
+                
+                const filename = `Bulk_Order_${studentNo}_${new Date().toISOString().split('T')[0]}.pdf`;
+                pdf.save(filename);
+                
+                // Restore original styling
+                document.body.style.maxWidth = originalMaxWidth;
+                document.body.style.padding = originalPadding;
+                document.body.style.margin = originalMargin;
+                
+                // Show buttons and footer again
+                buttons.forEach(btn => btn.style.display = '');
+                if (footer) footer.style.display = '';
+                if (buttonGroup) buttonGroup.style.display = '';
+            }).catch(err => {
+                console.error('Error generating PDF:', err);
+                alert('Error generating PDF. Please try again.');
+                
+                // Restore original styling
+                document.body.style.maxWidth = originalMaxWidth;
+                document.body.style.padding = originalPadding;
+                document.body.style.margin = originalMargin;
+                
+                // Show buttons and footer again
+                buttons.forEach(btn => btn.style.display = '');
+                if (footer) footer.style.display = '';
+                if (buttonGroup) buttonGroup.style.display = '';
+            });
         }
 
         function clearForm() {
