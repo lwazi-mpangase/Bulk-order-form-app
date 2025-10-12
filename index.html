@@ -52,6 +52,25 @@
             outline: none;
             border-bottom-color: #333;
         }
+        input[type="text"].error {
+            border-bottom-color: #f44336;
+            animation: shake 0.3s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .error-message {
+            color: #f44336;
+            font-size: 12px;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -73,10 +92,15 @@
             border: none;
             padding: 8px;
             font-size: 14px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
         }
         td input:focus {
             outline: 2px solid #333;
             background-color: #f5f5f5;
+        }
+        td input.error {
+            border-bottom-color: #f44336;
         }
         .add-row-btn {
             width: 100%;
@@ -250,15 +274,19 @@
     <div class="form-section">
         <label for="name">Name:</label>
         <input type="text" id="name" placeholder="Enter your full name">
+        <div class="error-message" id="name-error">This field is required</div>
         
         <label for="studentNo">Student No:</label>
         <input type="text" id="studentNo" placeholder="Enter student number">
+        <div class="error-message" id="studentNo-error">This field is required</div>
         
         <label for="yearGroup">Year Group:</label>
         <input type="text" id="yearGroup" placeholder="Enter year group">
+        <div class="error-message" id="yearGroup-error">This field is required</div>
         
         <label for="cellNo">Cell No:</label>
         <input type="text" id="cellNo" placeholder="Enter cell phone number">
+        <div class="error-message" id="cellNo-error">This field is required</div>
     </div>
     
     <table>
@@ -309,61 +337,80 @@
         }
 
         function downloadPDF() {
-            // Check if all fields are filled
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+            
+            let hasError = false;
+            
+            // Check if all personal fields are filled
             const name = document.getElementById('name').value.trim();
             const studentNo = document.getElementById('studentNo').value.trim();
             const yearGroup = document.getElementById('yearGroup').value.trim();
             const cellNo = document.getElementById('cellNo').value.trim();
             
-            // Validate required fields
             if (!name) {
-                alert('Please enter your Name.');
-                document.getElementById('name').focus();
-                return;
+                document.getElementById('name').classList.add('error');
+                document.getElementById('name-error').classList.add('show');
+                hasError = true;
             }
             if (!studentNo) {
-                alert('Please enter your Student Number.');
-                document.getElementById('studentNo').focus();
-                return;
+                document.getElementById('studentNo').classList.add('error');
+                document.getElementById('studentNo-error').classList.add('show');
+                hasError = true;
             }
             if (!yearGroup) {
-                alert('Please enter your Year Group.');
-                document.getElementById('yearGroup').focus();
-                return;
+                document.getElementById('yearGroup').classList.add('error');
+                document.getElementById('yearGroup-error').classList.add('show');
+                hasError = true;
             }
             if (!cellNo) {
-                alert('Please enter your Cell Number.');
-                document.getElementById('cellNo').focus();
-                return;
+                document.getElementById('cellNo').classList.add('error');
+                document.getElementById('cellNo-error').classList.add('show');
+                hasError = true;
             }
             
-            // Check if at least one order item is filled
+            // Check if at least one order item is filled and complete
             const rows = tableBody.querySelectorAll('tr');
             let hasCompleteRow = false;
             let hasIncompleteRow = false;
             
             rows.forEach(row => {
-                const code = row.querySelector('.code').value.trim();
-                const desc = row.querySelector('.description').value.trim();
-                const qty = row.querySelector('.qty').value.trim();
+                const codeInput = row.querySelector('.code');
+                const descInput = row.querySelector('.description');
+                const qtyInput = row.querySelector('.qty');
+                
+                const code = codeInput.value.trim();
+                const desc = descInput.value.trim();
+                const qty = qtyInput.value.trim();
                 
                 if (code || desc || qty) {
                     // Check if this row is complete
                     if (code && desc && qty) {
                         hasCompleteRow = true;
                     } else {
+                        // Mark incomplete fields in red
+                        if (!code) codeInput.classList.add('error');
+                        if (!desc) descInput.classList.add('error');
+                        if (!qty) qtyInput.classList.add('error');
                         hasIncompleteRow = true;
+                        hasError = true;
                     }
                 }
             });
             
             if (!hasCompleteRow) {
-                alert('Please add at least one complete order item (CODE, DESCRIPTION, and QTY must all be filled).');
-                return;
+                alert('Please add at least one complete order item.');
+                hasError = true;
             }
             
-            if (hasIncompleteRow) {
-                alert('All order rows must be complete. Please fill in CODE, DESCRIPTION, and QTY for each item, or remove incomplete rows.');
+            if (hasError) {
+                // Scroll to first error
+                const firstError = document.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
                 return;
             }
             
@@ -462,9 +509,24 @@
                 document.getElementById('yearGroup').value = '';
                 document.getElementById('cellNo').value = '';
                 
+                // Clear errors
+                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+                document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+                
                 tableBody.innerHTML = '';
             }
         }
+        
+        // Remove error styling when user starts typing
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('error');
+                    const errorMsg = document.getElementById(this.id + '-error');
+                    if (errorMsg) errorMsg.classList.remove('show');
+                });
+            });
+        });
     </script>
 </body>
 </html>
