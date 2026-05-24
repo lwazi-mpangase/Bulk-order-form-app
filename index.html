@@ -269,7 +269,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <h1>BULK ORDER TUT STUDENT 2025</h1>
+    <h1 id="page-title">BULK ORDER TUT STUDENT</h1>
     
     <div class="form-section">
         <label for="name">Name:</label>
@@ -311,10 +311,15 @@
 
     <footer>
         <p>Developed by <strong>Lwazi Mpangase</strong></p>
-        <p class="copyright">&copy; 2025 All Rights Reserved</p>
+        <p class="copyright">&copy; <span id="footer-year"></span> All Rights Reserved</p>
     </footer>
 
     <script>
+        // Set the current year dynamically in the title and footer
+        const currentYear = new Date().getFullYear();
+        document.getElementById('page-title').textContent = `BULK ORDER TUT STUDENT ${currentYear}`;
+        document.getElementById('footer-year').textContent = currentYear;
+
         const tableBody = document.getElementById('orderTable');
         
         function createRow() {
@@ -414,6 +419,18 @@
                 return;
             }
             
+            // Remove fully empty rows before PDF capture, keep track to restore them
+            const emptyRows = [];
+            tableBody.querySelectorAll('tr').forEach(row => {
+                const code = row.querySelector('.code').value.trim();
+                const desc = row.querySelector('.description').value.trim();
+                const qty = row.querySelector('.qty').value.trim();
+                if (!code && !desc && !qty) {
+                    emptyRows.push(row);
+                    row.style.display = 'none';
+                }
+            });
+
             // Hide buttons and footer temporarily
             const buttons = document.querySelectorAll('button');
             const footer = document.querySelector('footer');
@@ -482,10 +499,11 @@
                 document.body.style.padding = originalPadding;
                 document.body.style.margin = originalMargin;
                 
-                // Show buttons and footer again
+                // Show buttons, footer, and empty rows again
                 buttons.forEach(btn => btn.style.display = '');
                 if (footer) footer.style.display = '';
                 if (buttonGroup) buttonGroup.style.display = '';
+                emptyRows.forEach(row => row.style.display = '');
             }).catch(err => {
                 console.error('Error generating PDF:', err);
                 alert('Error generating PDF. Please try again.');
@@ -495,10 +513,11 @@
                 document.body.style.padding = originalPadding;
                 document.body.style.margin = originalMargin;
                 
-                // Show buttons and footer again
+                // Show buttons, footer, and empty rows again
                 buttons.forEach(btn => btn.style.display = '');
                 if (footer) footer.style.display = '';
                 if (buttonGroup) buttonGroup.style.display = '';
+                emptyRows.forEach(row => row.style.display = '');
             });
         }
 
