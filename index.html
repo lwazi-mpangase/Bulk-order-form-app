@@ -3,266 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="shortcut icon" href="/Favicons/android-chrome-192x192.png" type="image/x-icon">
     <meta name="theme-color" content="#ffffff">
-
     <title>Bulk Order Form App</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .form-section {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #555;
-            font-size: 14px;
-        }
-        input[type="text"] {
-            width: 100%;
-            border: none;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 8px;
-            font-size: 16px;
-            padding: 5px 0;
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus {
-            outline: none;
-            border-bottom-color: #333;
-        }
-        input[type="text"].error {
-            border-bottom-color: #f44336;
-            animation: shake 0.3s;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        .error-message {
-            color: #f44336;
-            font-size: 12px;
-            margin-top: -5px;
-            margin-bottom: 10px;
-            display: none;
-        }
-        .error-message.show {
-            display: block;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-        }
-        th, td {
-            border-bottom: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #333;
-            color: white;
-            font-weight: bold;
-        }
-        td input {
-            width: 100%;
-            border: none;
-            padding: 8px;
-            font-size: 14px;
-            border-bottom: 2px solid transparent;
-            transition: border-color 0.3s;
-        }
-        td input:focus {
-            outline: 2px solid #333;
-            background-color: #f5f5f5;
-        }
-        td input.error {
-            border-bottom-color: #f44336;
-        }
-        .add-row-btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .add-row-btn:hover {
-            background-color: #555;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .button-group {
-            text-align: center;
-            margin-top: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        button {
-            padding: 12px 30px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-            flex: 1;
-            min-width: 150px;
-        }
-        .print-btn {
-            background-color: #2196F3;
-            color: white;
-        }
-        .print-btn:hover {
-            background-color: #0b7dda;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .share-btn {
-            background-color: #333;
-            color: white;
-        }
-        .share-btn:hover {
-            background-color: #555;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .clear-btn {
-            background-color: #666;
-            color: white;
-            flex-basis: 100%;
-        }
-        .clear-btn:hover {
-            background-color: #444;
-        }
-        .download-btn {
-            background-color: #2196F3;
-            color: white;
-        }
-        .download-btn:hover {
-            background-color: #0b7dda;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .remove-btn {
-            background-color: #ff5722;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            font-size: 16px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .remove-btn:hover {
-            background-color: #e64a19;
-        }
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 2px solid #ddd;
-            color: #666;
-            font-size: 14px;
-        }
-        footer p {
-            margin: 5px 0;
-        }
-        .copyright {
-            font-size: 12px;
-            color: #999;
-        }
-        @media (min-width: 768px) {
-            .clear-btn {
-                flex-basis: auto;
-            }
-        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .form-section { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #555; font-size: 14px; }
+        input[type="text"] { width: 100%; border: none; border-bottom: 2px solid #ddd; margin-bottom: 8px; font-size: 16px; padding: 5px 0; transition: border-color 0.3s; }
+        input[type="text"]:focus { outline: none; border-bottom-color: #333; }
+        input[type="text"].error { border-bottom-color: #f44336; animation: shake 0.3s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .error-message { color: #f44336; font-size: 12px; margin-top: -5px; margin-bottom: 10px; display: none; }
+        .error-message.show { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #333; color: white; font-weight: bold; }
+        td input { width: 100%; border: none; padding: 8px; font-size: 14px; border-bottom: 2px solid transparent; transition: border-color 0.3s; }
+        td input:focus { outline: 2px solid #333; background-color: #f5f5f5; }
+        td input.error { border-bottom-color: #f44336; }
+        .add-row-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: #333; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: all 0.3s; }
+        .add-row-btn:hover { background-color: #555; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .button-group { text-align: center; margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        button { padding: 12px 30px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; transition: all 0.3s; flex: 1; min-width: 150px; }
+        .download-btn { background-color: #2196F3; color: white; }
+        .download-btn:hover { background-color: #0b7dda; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .email-btn { background-color: #4CAF50; color: white; }
+        .email-btn:hover { background-color: #388E3C; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .clear-btn { background-color: #666; color: white; flex-basis: 100%; }
+        .clear-btn:hover { background-color: #444; }
+        .remove-btn { background-color: #ff5722; color: white; border: none; border-radius: 3px; width: 28px; height: 28px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+        .remove-btn:hover { background-color: #e64a19; }
+        footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 2px solid #ddd; color: #666; font-size: 14px; }
+        footer p { margin: 5px 0; }
+        .copyright { font-size: 12px; color: #999; }
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-box { background: white; border-radius: 10px; padding: 25px; max-width: 480px; width: 90%; margin: 10% auto; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .modal-box h2 { margin: 0 0 5px; color: #333; font-size: 18px; }
+        .modal-box .modal-week { margin: 0 0 15px; color: #888; font-size: 13px; }
+        .modal-box .modal-label { margin: 0 0 10px; color: #555; font-size: 14px; font-weight: bold; }
+        .modal-box ul { margin: 0 0 20px; padding-left: 20px; color: #444; font-size: 14px; line-height: 1.8; }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-apply-btn { flex: 1; background: #333; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .modal-dismiss-btn { flex: 1; background: #aaa; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        @media (min-width: 768px) { .clear-btn { flex-basis: auto; } }
         @media print {
-            body {
-                background-color: white;
-                padding: 5px;
-                margin: 0;
-            }
-            h1 {
-                margin-bottom: 15px;
-                font-size: 20px;
-            }
-            .form-section {
-                box-shadow: none;
-                padding: 0;
-                margin-bottom: 10px;
-            }
-            label {
-                margin-top: 5px;
-                font-size: 12px;
-            }
-            input[type="text"] {
-                margin-bottom: 5px;
-                padding: 3px 0;
-                font-size: 14px;
-            }
-            table {
-                margin-top: 10px;
-            }
-            th, td {
-                padding: 5px;
-                font-size: 12px;
-            }
-            button {
-                display: none;
-            }
-            .button-group {
-                display: none;
-            }
-            .remove-btn {
-                display: none;
-            }
-            .add-row-btn {
-                display: none;
-            }
-            footer {
-                display: none;
-            }
-            th {
-                background-color: #f0f0f0 !important;
-                color: black !important;
-                -webkit-print-color-adjust: exact;
-            }
-            tr:empty {
-                display: none;
-            }
+            body { background-color: white; padding: 5px; margin: 0; }
+            h1 { margin-bottom: 15px; font-size: 20px; }
+            .form-section { box-shadow: none; padding: 0; margin-bottom: 10px; }
+            label { margin-top: 5px; font-size: 12px; }
+            input[type="text"] { margin-bottom: 5px; padding: 3px 0; font-size: 14px; }
+            table { margin-top: 10px; }
+            th, td { padding: 5px; font-size: 12px; }
+            button, .button-group, .remove-btn, .add-row-btn, footer, .modal-overlay { display: none; }
+            th { background-color: #f0f0f0 !important; color: black !important; -webkit-print-color-adjust: exact; }
+            tr:empty { display: none; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -270,25 +71,25 @@
 </head>
 <body>
     <h1 id="page-title">BULK ORDER TUT STUDENT</h1>
-    
+
     <div class="form-section">
         <label for="name">Name:</label>
         <input type="text" id="name" placeholder="Enter your full name">
         <div class="error-message" id="name-error">This field is required</div>
-        
+
         <label for="studentNo">Student No:</label>
         <input type="text" id="studentNo" placeholder="Enter student number">
         <div class="error-message" id="studentNo-error">This field is required</div>
-        
+
         <label for="yearGroup">Year Group:</label>
-        <input type="text" id="yearGroup" placeholder="Enter year group">
+        <input type="text" id="yearGroup" placeholder="Enter year group (e.g. 1, 2, 3, 4)">
         <div class="error-message" id="yearGroup-error">This field is required</div>
-        
+
         <label for="cellNo">Cell No:</label>
         <input type="text" id="cellNo" placeholder="Enter cell phone number">
         <div class="error-message" id="cellNo-error">This field is required</div>
     </div>
-    
+
     <table>
         <thead>
             <tr>
@@ -298,15 +99,29 @@
                 <th style="width: 10%"></th>
             </tr>
         </thead>
-        <tbody id="orderTable">
-        </tbody>
+        <tbody id="orderTable"></tbody>
     </table>
-    
+
     <button class="add-row-btn" onclick="addRow()">+ Add Row</button>
-    
+
     <div class="button-group">
         <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+        <button class="email-btn" onclick="sendEmail()">Send via Email</button>
         <button class="clear-btn" onclick="clearForm()">Clear All</button>
+    </div>
+
+    <!-- Year Group Suggestion Modal -->
+    <div class="modal-overlay" id="suggestion-modal">
+        <div class="modal-box">
+            <h2 id="modal-title"></h2>
+            <p class="modal-week" id="modal-week"></p>
+            <p class="modal-label">Recommended items to order this week:</p>
+            <ul id="modal-items"></ul>
+            <div class="modal-actions">
+                <button class="modal-apply-btn" onclick="applySuggestions()">&#10003; Auto-fill Order</button>
+                <button class="modal-dismiss-btn" onclick="closeSuggestionModal()">&#10006; Dismiss</button>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -315,113 +130,226 @@
     </footer>
 
     <script>
-        // Set the current year dynamically in the title and footer
+        // ── YEAR & WEEK HELPERS ───────────────────────────────────────────────
         const currentYear = new Date().getFullYear();
-        document.getElementById('page-title').textContent = `BULK ORDER TUT STUDENT ${currentYear}`;
+        document.getElementById('page-title').textContent = 'BULK ORDER TUT STUDENT ' + currentYear;
         document.getElementById('footer-year').textContent = currentYear;
 
+        function currentWeekNumber() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 1);
+            const diff = now - start + (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60000;
+            return Math.floor(diff / 604800000) + 1;
+        }
+
+        function getWeekDateRange(weekNum) {
+            const jan1 = new Date(new Date().getFullYear(), 0, 1);
+            const weekStart = new Date(jan1.getTime() + (weekNum - 1) * 7 * 86400000);
+            const weekEnd = new Date(weekStart.getTime() + 6 * 86400000);
+            const fmt = d => d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
+            return fmt(weekStart) + ' - ' + fmt(weekEnd);
+        }
+
+        // ── PRODUCT LISTS (replace with real data when ready) ─────────────────
+        // Structure: yearGroupData['yearGroup'][{ week, items: [{code, description, qty}] }]
+        const thisWeek = currentWeekNumber();
+
+        const yearGroupData = {
+            '1': [
+                { week: thisWeek, items: [
+                    { code: 'Y1-001', description: 'A4 Sketchbook (80 pages)', qty: '2' },
+                    { code: 'Y1-002', description: 'Pencil Set (HB, 2B, 4B, 6B)', qty: '1' },
+                    { code: 'Y1-003', description: 'Eraser (Large)', qty: '2' },
+                    { code: 'Y1-004', description: 'Ruler 30cm', qty: '1' },
+                ]}
+            ],
+            '2': [
+                { week: thisWeek, items: [
+                    { code: 'Y2-001', description: 'A3 Drawing Paper Pack', qty: '1' },
+                    { code: 'Y2-002', description: 'Fine Liner Set (0.1-0.8mm)', qty: '1' },
+                    { code: 'Y2-003', description: 'Colour Pencils (24 pack)', qty: '1' },
+                    { code: 'Y2-004', description: 'Set Square', qty: '1' },
+                ]}
+            ],
+            '3': [
+                { week: thisWeek, items: [
+                    { code: 'Y3-001', description: 'Tracing Paper Roll', qty: '1' },
+                    { code: 'Y3-002', description: 'Technical Pen Set', qty: '1' },
+                    { code: 'Y3-003', description: 'Acrylic Paint Set (12 colours)', qty: '1' },
+                    { code: 'Y3-004', description: 'Canvas Board A3', qty: '2' },
+                ]}
+            ],
+            '4': [
+                { week: thisWeek, items: [
+                    { code: 'Y4-001', description: 'Portfolio Folder A2', qty: '1' },
+                    { code: 'Y4-002', description: 'Presentation Board', qty: '2' },
+                    { code: 'Y4-003', description: 'Spray Mount Adhesive', qty: '1' },
+                    { code: 'Y4-004', description: 'Cutting Mat A3', qty: '1' },
+                ]}
+            ],
+        };
+
+        let currentSuggestions = [];
+
+        // ── SUGGESTION MODAL ──────────────────────────────────────────────────
+        function checkYearGroupSuggestions() {
+            const input = document.getElementById('yearGroup').value.trim();
+            const week = currentWeekNumber();
+            const groupData = yearGroupData[input];
+            if (!groupData) return;
+
+            const weekData = groupData.find(function(w) { return w.week === week; });
+            if (!weekData) return;
+
+            currentSuggestions = weekData.items;
+
+            document.getElementById('modal-title').textContent = 'Year ' + input + ' - Week ' + week + ' Shopping List';
+            document.getElementById('modal-week').textContent = 'Week of ' + getWeekDateRange(week);
+
+            const ul = document.getElementById('modal-items');
+            ul.innerHTML = '';
+            weekData.items.forEach(function(item) {
+                const li = document.createElement('li');
+                li.textContent = item.description + ' (x' + item.qty + ') - ' + item.code;
+                ul.appendChild(li);
+            });
+
+            document.getElementById('suggestion-modal').style.display = 'block';
+        }
+
+        function applySuggestions() {
+            tableBody.innerHTML = '';
+            currentSuggestions.forEach(function(item) {
+                const row = createRow();
+                row.querySelector('.code').value = item.code;
+                row.querySelector('.description').value = item.description;
+                row.querySelector('.qty').value = item.qty;
+                tableBody.appendChild(row);
+            });
+            closeSuggestionModal();
+        }
+
+        function closeSuggestionModal() {
+            document.getElementById('suggestion-modal').style.display = 'none';
+        }
+
+        // ── TABLE ─────────────────────────────────────────────────────────────
         const tableBody = document.getElementById('orderTable');
-        
+
         function createRow() {
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><input type="text" class="code" placeholder="Code"></td>
-                <td><input type="text" class="description" placeholder="Description"></td>
-                <td><input type="text" class="qty" placeholder="Qty"></td>
-                <td><button class="remove-btn" onclick="removeRow(this)">×</button></td>
-            `;
+            row.innerHTML =
+                '<td><input type="text" class="code" placeholder="Code"></td>' +
+                '<td><input type="text" class="description" placeholder="Description"></td>' +
+                '<td><input type="text" class="qty" placeholder="Qty"></td>' +
+                '<td><button class="remove-btn" onclick="removeRow(this)">x</button></td>';
             return row;
         }
 
-        function addRow() {
-            tableBody.appendChild(createRow());
-        }
+        function addRow() { tableBody.appendChild(createRow()); }
+        function removeRow(btn) { btn.closest('tr').remove(); }
 
-        function removeRow(btn) {
-            btn.closest('tr').remove();
-        }
+        // ── SHARED VALIDATION ─────────────────────────────────────────────────
+        function validateForm() {
+            document.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+            document.querySelectorAll('.error-message').forEach(function(el) { el.classList.remove('show'); });
 
-        function downloadPDF() {
-            // Clear previous errors
-            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
-            
             let hasError = false;
-            
-            // Check if all personal fields are filled
+
             const name = document.getElementById('name').value.trim();
             const studentNo = document.getElementById('studentNo').value.trim();
             const yearGroup = document.getElementById('yearGroup').value.trim();
             const cellNo = document.getElementById('cellNo').value.trim();
-            
-            if (!name) {
-                document.getElementById('name').classList.add('error');
-                document.getElementById('name-error').classList.add('show');
-                hasError = true;
-            }
-            if (!studentNo) {
-                document.getElementById('studentNo').classList.add('error');
-                document.getElementById('studentNo-error').classList.add('show');
-                hasError = true;
-            }
-            if (!yearGroup) {
-                document.getElementById('yearGroup').classList.add('error');
-                document.getElementById('yearGroup-error').classList.add('show');
-                hasError = true;
-            }
-            if (!cellNo) {
-                document.getElementById('cellNo').classList.add('error');
-                document.getElementById('cellNo-error').classList.add('show');
-                hasError = true;
-            }
-            
-            // Check if at least one order item is filled and complete
+
+            if (!name) { document.getElementById('name').classList.add('error'); document.getElementById('name-error').classList.add('show'); hasError = true; }
+            if (!studentNo) { document.getElementById('studentNo').classList.add('error'); document.getElementById('studentNo-error').classList.add('show'); hasError = true; }
+            if (!yearGroup) { document.getElementById('yearGroup').classList.add('error'); document.getElementById('yearGroup-error').classList.add('show'); hasError = true; }
+            if (!cellNo) { document.getElementById('cellNo').classList.add('error'); document.getElementById('cellNo-error').classList.add('show'); hasError = true; }
+
             const rows = tableBody.querySelectorAll('tr');
             let hasCompleteRow = false;
-            let hasIncompleteRow = false;
-            
-            rows.forEach(row => {
+
+            rows.forEach(function(row) {
                 const codeInput = row.querySelector('.code');
                 const descInput = row.querySelector('.description');
                 const qtyInput = row.querySelector('.qty');
-                
                 const code = codeInput.value.trim();
                 const desc = descInput.value.trim();
                 const qty = qtyInput.value.trim();
-                
+
                 if (code || desc || qty) {
-                    // Check if this row is complete
                     if (code && desc && qty) {
                         hasCompleteRow = true;
                     } else {
-                        // Mark incomplete fields in red
                         if (!code) codeInput.classList.add('error');
                         if (!desc) descInput.classList.add('error');
                         if (!qty) qtyInput.classList.add('error');
-                        hasIncompleteRow = true;
                         hasError = true;
                     }
                 }
             });
-            
+
             if (!hasCompleteRow) {
                 alert('Please add at least one complete order item.');
                 hasError = true;
             }
-            
+
             if (hasError) {
-                // Scroll to first error
                 const firstError = document.querySelector('.error');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    firstError.focus();
-                }
-                return;
+                if (firstError) { firstError.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstError.focus(); }
+                return false;
             }
-            
-            // Remove fully empty rows before PDF capture, keep track to restore them
+            return true;
+        }
+
+        // ── SEND VIA EMAIL ────────────────────────────────────────────────────
+        function sendEmail() {
+            if (!validateForm()) return;
+
+            const name = document.getElementById('name').value.trim();
+            const studentNo = document.getElementById('studentNo').value.trim();
+            const yearGroup = document.getElementById('yearGroup').value.trim();
+            const cellNo = document.getElementById('cellNo').value.trim();
+
+            let orderItems = '';
+            tableBody.querySelectorAll('tr').forEach(function(row) {
+                const code = row.querySelector('.code').value.trim();
+                const desc = row.querySelector('.description').value.trim();
+                const qty = row.querySelector('.qty').value.trim();
+                if (code && desc && qty) {
+                    orderItems += code + ' | ' + desc + ' | Qty: ' + qty + '\n';
+                }
+            });
+
+            const subject = 'Bulk Order - ' + name + ' (' + studentNo + ')';
+            const body =
+                'BULK ORDER - TUT STUDENT ' + currentYear + '\n' +
+                '========================================\n\n' +
+                'STUDENT DETAILS\n' +
+                '---------------\n' +
+                'Name:         ' + name + '\n' +
+                'Student No:   ' + studentNo + '\n' +
+                'Year Group:   ' + yearGroup + '\n' +
+                'Cell No:      ' + cellNo + '\n\n' +
+                'ORDER ITEMS\n' +
+                '-----------\n' +
+                orderItems + '\n' +
+                '========================================\n' +
+                'Submitted on: ' + new Date().toLocaleDateString();
+
+            // Replace with the receiver's actual email address
+            const receiverEmail = 'orders@yourdomain.com';
+            window.location.href = 'mailto:' + receiverEmail + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        }
+
+        // ── DOWNLOAD PDF ──────────────────────────────────────────────────────
+        function downloadPDF() {
+            if (!validateForm()) return;
+
+            const studentNo = document.getElementById('studentNo').value.trim();
+
             const emptyRows = [];
-            tableBody.querySelectorAll('tr').forEach(row => {
+            tableBody.querySelectorAll('tr').forEach(function(row) {
                 const code = row.querySelector('.code').value.trim();
                 const desc = row.querySelector('.description').value.trim();
                 const qty = row.querySelector('.qty').value.trim();
@@ -431,120 +359,78 @@
                 }
             });
 
-            // Hide buttons and footer temporarily
             const buttons = document.querySelectorAll('button');
             const footer = document.querySelector('footer');
             const buttonGroup = document.querySelector('.button-group');
-            
-            buttons.forEach(btn => btn.style.display = 'none');
+            buttons.forEach(function(btn) { btn.style.display = 'none'; });
             if (footer) footer.style.display = 'none';
             if (buttonGroup) buttonGroup.style.display = 'none';
-            
-            // Use html2canvas and jsPDF to create PDF
-            const { jsPDF } = window.jspdf;
-            
-            // Temporarily adjust body styling for better PDF capture
+
+            const jsPDF = window.jspdf.jsPDF;
             const originalMaxWidth = document.body.style.maxWidth;
             const originalPadding = document.body.style.padding;
             const originalMargin = document.body.style.margin;
-            
             document.body.style.maxWidth = '750px';
             document.body.style.padding = '20px';
             document.body.style.margin = '0 auto';
-            
-            html2canvas(document.body, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                width: 750,
-                windowWidth: 750,
-                x: 0,
-                y: 0
-            }).then(canvas => {
+
+            html2canvas(document.body, { scale: 2, useCORS: true, logging: false, width: 750, windowWidth: 750, x: 0, y: 0 }).then(function(canvas) {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                // A4 dimensions
-                const pdfWidth = 210;
-                const pdfHeight = 297;
-                
-                // Calculate image dimensions to fit PDF with margins
-                const margin = 15;
-                const contentWidth = pdfWidth - (2 * margin);
+                const pdfWidth = 210, pdfHeight = 297, margin = 15;
+                const contentWidth = pdfWidth - 2 * margin;
                 const contentHeight = (canvas.height * contentWidth) / canvas.width;
-                
-                let yPosition = margin;
-                let remainingHeight = contentHeight;
-                let sourceY = 0;
-                
-                // Add first page
-                const firstPageHeight = Math.min(contentHeight, pdfHeight - 2 * margin);
                 pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight, '', 'FAST');
-                
-                remainingHeight -= (pdfHeight - 2 * margin);
-                
-                // Add additional pages if content overflows
+                let remainingHeight = contentHeight - (pdfHeight - 2 * margin);
                 while (remainingHeight > 0) {
                     pdf.addPage();
-                    yPosition = -(contentHeight - remainingHeight) + margin;
-                    pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, contentHeight, '', 'FAST');
+                    pdf.addImage(imgData, 'PNG', margin, -(contentHeight - remainingHeight) + margin, contentWidth, contentHeight, '', 'FAST');
                     remainingHeight -= (pdfHeight - 2 * margin);
                 }
-                
-                const filename = `Bulk_Order_${studentNo}_${new Date().toISOString().split('T')[0]}.pdf`;
-                pdf.save(filename);
-                
-                // Restore original styling
-                document.body.style.maxWidth = originalMaxWidth;
-                document.body.style.padding = originalPadding;
-                document.body.style.margin = originalMargin;
-                
-                // Show buttons, footer, and empty rows again
-                buttons.forEach(btn => btn.style.display = '');
-                if (footer) footer.style.display = '';
-                if (buttonGroup) buttonGroup.style.display = '';
-                emptyRows.forEach(row => row.style.display = '');
-            }).catch(err => {
+                pdf.save('Bulk_Order_' + studentNo + '_' + new Date().toISOString().split('T')[0] + '.pdf');
+                restore();
+            }).catch(function(err) {
                 console.error('Error generating PDF:', err);
                 alert('Error generating PDF. Please try again.');
-                
-                // Restore original styling
+                restore();
+            });
+
+            function restore() {
                 document.body.style.maxWidth = originalMaxWidth;
                 document.body.style.padding = originalPadding;
                 document.body.style.margin = originalMargin;
-                
-                // Show buttons, footer, and empty rows again
-                buttons.forEach(btn => btn.style.display = '');
+                buttons.forEach(function(btn) { btn.style.display = ''; });
                 if (footer) footer.style.display = '';
                 if (buttonGroup) buttonGroup.style.display = '';
-                emptyRows.forEach(row => row.style.display = '');
-            });
+                emptyRows.forEach(function(row) { row.style.display = ''; });
+            }
         }
 
+        // ── CLEAR FORM ────────────────────────────────────────────────────────
         function clearForm() {
             if (confirm('Are you sure you want to clear all fields?')) {
                 document.getElementById('name').value = '';
                 document.getElementById('studentNo').value = '';
                 document.getElementById('yearGroup').value = '';
                 document.getElementById('cellNo').value = '';
-                
-                // Clear errors
-                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-                document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
-                
+                document.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+                document.querySelectorAll('.error-message').forEach(function(el) { el.classList.remove('show'); });
                 tableBody.innerHTML = '';
             }
         }
-        
-        // Remove error styling when user starts typing
+
+        // ── EVENT LISTENERS ───────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('input[type="text"]').forEach(input => {
+            // Remove error styling on input
+            document.querySelectorAll('input[type="text"]').forEach(function(input) {
                 input.addEventListener('input', function() {
                     this.classList.remove('error');
                     const errorMsg = document.getElementById(this.id + '-error');
                     if (errorMsg) errorMsg.classList.remove('show');
                 });
             });
+            // Trigger suggestion popup when user leaves year group field
+            document.getElementById('yearGroup').addEventListener('blur', checkYearGroupSuggestions);
         });
     </script>
 </body>
