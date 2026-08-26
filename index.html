@@ -11,53 +11,147 @@
     <meta name="theme-color" content="#ffffff">
     <title>Bulk Order Form App</title>
     <style>
-        /* ── LIGHT MODE (default) ── */
+        /* ── CSS VARIABLES ── */
         :root {
-            --bg: #f9f9f9;
-            --surface: #ffffff;
-            --text: #333;
-            --text-muted: #555;
-            --text-faint: #999;
-            --border: #ddd;
-            --input-focus: #333;
-            --table-bg: #ffffff;
-            --td-input-focus-bg: #f5f5f5;
-            --th-bg: #333;
-            --th-color: white;
-            --footer-border: #ddd;
-            --footer-color: #666;
-            --share-email-bg: #f5f5f5;
-            --modal-bg: #ffffff;
+            --bg: #f9f9f9; --surface: #ffffff; --text: #333; --text-muted: #555;
+            --text-faint: #999; --border: #ddd; --input-focus: #333;
+            --table-bg: #ffffff; --td-input-focus-bg: #f5f5f5;
+            --th-bg: #333; --th-color: white;
+            --footer-border: #ddd; --footer-color: #666;
+            --share-email-bg: #f5f5f5; --modal-bg: #ffffff;
+            --nav-bg: #222; --nav-color: #fff;
+            --drawer-bg: #1a1a1a; --drawer-color: #eee;
+            --notif-card-bg: #2a2a2a; --notif-border: #444;
         }
-        /* ── DARK MODE ── */
         body.dark {
-            --bg: #121212;
-            --surface: #1e1e1e;
-            --text: #e0e0e0;
-            --text-muted: #aaa;
-            --text-faint: #666;
-            --border: #444;
-            --input-focus: #90caf9;
-            --table-bg: #1e1e1e;
-            --td-input-focus-bg: #2a2a2a;
-            --th-bg: #272727;
-            --th-color: #e0e0e0;
-            --footer-border: #333;
-            --footer-color: #888;
-            --share-email-bg: #2a2a2a;
-            --modal-bg: #1e1e1e;
+            --bg: #121212; --surface: #1e1e1e; --text: #e0e0e0; --text-muted: #aaa;
+            --text-faint: #666; --border: #444; --input-focus: #90caf9;
+            --table-bg: #1e1e1e; --td-input-focus-bg: #2a2a2a;
+            --th-bg: #272727; --th-color: #e0e0e0;
+            --footer-border: #333; --footer-color: #888;
+            --share-email-bg: #2a2a2a; --modal-bg: #1e1e1e;
         }
-        /* ── DARK MODE TOGGLE ── */
-        .dark-toggle { position: fixed; top: 14px; right: 16px; z-index: 999; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 20px; padding: 6px 14px; font-size: 13px; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-        .dark-toggle:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: var(--bg); color: var(--text); transition: background-color 0.3s, color 0.3s; }
+
+        /* ── RESET & BASE ── */
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg); color: var(--text); transition: background-color 0.3s, color 0.3s; }
+
+        /* ── NAV BAR ── */
+        .navbar {
+            position: sticky; top: 0; z-index: 500;
+            background: var(--nav-bg); color: var(--nav-color);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; height: 52px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .nav-title { font-size: 15px; font-weight: bold; letter-spacing: 0.5px; color: #fff; }
+        .nav-icons { display: flex; align-items: center; gap: 6px; }
+        .nav-icon-btn {
+            background: none; border: none; color: #fff; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%; font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s; padding: 0; min-width: unset; flex: unset;
+        }
+        .nav-icon-btn:hover { background: rgba(255,255,255,0.12); }
+        .bell-wrap { position: relative; }
+        .notif-badge {
+            position: absolute; top: 4px; right: 4px;
+            background: #f44336; color: white; border-radius: 50%;
+            width: 16px; height: 16px; font-size: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; pointer-events: none;
+        }
+
+        /* ── SIDE DRAWER ── */
+        .drawer-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5); z-index: 800;
+        }
+        .drawer-overlay.open { display: block; }
+        .drawer {
+            position: fixed; top: 0; right: -320px; width: 300px; max-width: 90vw;
+            height: 100%; background: var(--drawer-bg); color: var(--drawer-color);
+            z-index: 900; transition: right 0.3s ease;
+            display: flex; flex-direction: column; box-shadow: -4px 0 16px rgba(0,0,0,0.4);
+        }
+        .drawer.open { right: 0; }
+        .drawer-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px; border-bottom: 1px solid #333; background: #111;
+        }
+        .drawer-header h3 { margin: 0; font-size: 16px; color: #fff; }
+        .drawer-close {
+            background: none; border: none; color: #aaa; font-size: 22px;
+            cursor: pointer; padding: 0; line-height: 1; min-width: unset; flex: unset;
+        }
+        .drawer-close:hover { color: #fff; }
+        .drawer-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* ── DARK MODE TOGGLE IN DRAWER ── */
+        .drawer-toggle-row {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #2a2a2a; border-radius: 8px; padding: 12px 14px;
+        }
+        .drawer-toggle-label { font-size: 14px; color: #ccc; }
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; inset: 0; background: #555; border-radius: 24px;
+            cursor: pointer; transition: background 0.3s;
+        }
+        .toggle-slider:before {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            left: 3px; top: 3px; background: white; border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        input:checked + .toggle-slider { background: #2196F3; }
+        input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        /* ── NOTIFICATIONS IN DRAWER ── */
+        .drawer-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin: 0 0 8px; }
+        .notif-list { display: flex; flex-direction: column; gap: 10px; }
+        .notif-card {
+            background: #2a2a2a; border-radius: 8px; padding: 12px 14px;
+            border-left: 3px solid #2196F3;
+        }
+        .notif-card.unread { border-left-color: #f44336; }
+        .notif-card .notif-msg { font-size: 14px; color: #e0e0e0; margin: 0 0 6px; line-height: 1.4; }
+        .notif-card .notif-meta { font-size: 11px; color: #888; display: flex; flex-direction: column; gap: 2px; }
+        .notif-card .notif-countdown { font-size: 12px; color: #90caf9; margin-top: 4px; font-weight: bold; }
+
+        /* ── NOTIFICATION POPUP (bell click) ── */
+        .notif-popup-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); z-index: 1000;
+        }
+        .notif-popup-overlay.open { display: block; }
+        .notif-popup {
+            background: var(--modal-bg); border-radius: 12px; padding: 24px;
+            max-width: 380px; width: 90%; margin: 15% auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .notif-popup-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
+        .notif-popup h3 { margin: 0 0 8px; color: var(--text); font-size: 17px; text-align: center; }
+        .notif-popup .notif-popup-msg { color: var(--text-muted); font-size: 14px; line-height: 1.5; text-align: center; margin: 0 0 8px; }
+        .notif-popup .notif-popup-meta { color: var(--text-faint); font-size: 12px; text-align: center; margin: 0 0 6px; }
+        .notif-popup .notif-popup-countdown { color: #2196F3; font-size: 13px; font-weight: bold; text-align: center; margin: 0 0 20px; }
+        .notif-popup-ok {
+            display: block; width: 100%; padding: 11px;
+            background: #333; color: white; border: none; border-radius: 8px;
+            font-size: 15px; cursor: pointer; transition: background 0.2s;
+            min-width: unset; flex: unset;
+        }
+        .notif-popup-ok:hover { background: #555; }
+
+        /* ── MAIN CONTENT WRAPPER ── */
+        .main-content { max-width: 800px; margin: 0 auto; padding: 20px; }
         h1 { text-align: center; color: var(--text); margin-bottom: 30px; }
         .form-section { background: var(--surface); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; transition: background 0.3s; }
         label { display: block; margin-top: 10px; font-weight: bold; color: var(--text-muted); font-size: 14px; }
         input[type="text"] { width: 100%; border: none; border-bottom: 2px solid var(--border); margin-bottom: 8px; font-size: 16px; padding: 5px 0; transition: border-color 0.3s; background: transparent; color: var(--text); }
         input[type="text"]:focus { outline: none; border-bottom-color: var(--input-focus); }
         input[type="text"].error { border-bottom-color: #f44336; animation: shake 0.3s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
         .error-message { color: #f44336; font-size: 12px; margin-top: -5px; margin-bottom: 10px; display: none; }
         .error-message.show { display: block; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--table-bg); transition: background 0.3s; }
@@ -74,45 +168,38 @@
         .download-btn:hover { background-color: #0b7dda; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
         .clear-btn { background-color: #666; color: white; flex-basis: 100%; }
         .clear-btn:hover { background-color: #444; }
-        .remove-btn { background-color: #ff5722; color: white; border: none; border-radius: 3px; width: 28px; height: 28px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+        .remove-btn { background-color: #ff5722; color: white; border: none; border-radius: 3px; width: 28px; height: 28px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; min-width: unset; flex: unset; padding: 0; }
         .remove-btn:hover { background-color: #e64a19; }
+        .share-btn { background-color: #4CAF50; color: white; }
+        .share-btn:hover { background-color: #388E3C; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
         footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 2px solid var(--footer-border); color: var(--footer-color); font-size: 14px; }
         footer p { margin: 5px 0; }
         .copyright { font-size: 12px; color: var(--text-faint); }
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
-        .modal-box { background: var(--modal-bg); border-radius: 10px; padding: 25px; max-width: 480px; width: 90%; margin: 10% auto; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-        .modal-box h2 { margin: 0 0 5px; color: var(--text); font-size: 18px; }
-        .modal-box .modal-week { margin: 0 0 15px; color: var(--text-muted); font-size: 13px; }
-        .modal-box .modal-label { margin: 0 0 10px; color: var(--text-muted); font-size: 14px; font-weight: bold; }
-        .modal-box ul { margin: 0 0 20px; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
-        .modal-actions { display: flex; gap: 10px; }
-        .modal-apply-btn { flex: 1; background: #333; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
-        .modal-dismiss-btn { flex: 1; background: #aaa; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
-        /* Share popup */
-        .share-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+
+        /* ── SHARE / DOWNLOAD POPUPS ── */
+        .share-popup { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
         .share-box { background: var(--modal-bg); border-radius: 10px; padding: 25px; max-width: 420px; width: 90%; margin: 15% auto; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; }
         .share-box h2 { margin: 0 0 8px; color: var(--text); font-size: 18px; }
         .share-box p { margin: 0 0 18px; color: var(--text-muted); font-size: 14px; }
         .share-email-row { display: flex; align-items: center; background: var(--share-email-bg); border-radius: 6px; padding: 10px 14px; margin-bottom: 18px; gap: 10px; }
         .share-email-row span { flex: 1; font-size: 15px; color: var(--text); font-weight: bold; text-align: left; word-break: break-all; }
-        .copy-btn { background: #333; color: white; border: none; border-radius: 5px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+        .copy-btn { background: #333; color: white; border: none; border-radius: 5px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background 0.2s; min-width: unset; flex: unset; }
         .copy-btn:hover { background: #555; }
         .copy-btn.copied { background: #4CAF50; }
-        .share-close-btn { background: #aaa; color: white; border: none; border-radius: 5px; padding: 10px 24px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+        .share-close-btn { background: #aaa; color: white; border: none; border-radius: 5px; padding: 10px 24px; font-size: 14px; cursor: pointer; transition: background 0.2s; min-width: unset; flex: unset; }
         .share-close-btn:hover { background: #888; }
-        .share-btn { background-color: #4CAF50; color: white; }
-        .share-btn:hover { background-color: #388E3C; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
         @media (min-width: 768px) { .clear-btn { flex-basis: auto; } }
         @media print {
-            body { background-color: white; padding: 5px; margin: 0; }
+            .navbar, .drawer, .drawer-overlay, .notif-popup-overlay, .share-popup, footer, button, .button-group, .remove-btn, .add-row-btn { display: none !important; }
+            body { background: white; }
+            .main-content { padding: 5px; }
             h1 { margin-bottom: 15px; font-size: 20px; }
             .form-section { box-shadow: none; padding: 0; margin-bottom: 10px; }
             label { margin-top: 5px; font-size: 12px; }
             input[type="text"] { margin-bottom: 5px; padding: 3px 0; font-size: 14px; }
             table { margin-top: 10px; }
             th, td { padding: 5px; font-size: 12px; }
-            button, .button-group, .remove-btn, .add-row-btn, footer, .modal-overlay { display: none; }
             th { background-color: #f0f0f0 !important; color: black !important; -webkit-print-color-adjust: exact; }
             tr:empty { display: none; }
         }
@@ -121,211 +208,256 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <button class="dark-toggle" id="dark-toggle" onclick="toggleDark()">🌙 Dark</button>
-    <h1 id="page-title">BULK ORDER TUT STUDENT</h1>
 
-    <div class="form-section">
-        <label for="name">Name:</label>
-        <input type="text" id="name" placeholder="Enter your full name">
-        <div class="error-message" id="name-error">This field is required</div>
-
-        <label for="studentNo">Student No:</label>
-        <input type="text" id="studentNo" placeholder="Enter student number">
-        <div class="error-message" id="studentNo-error">This field is required</div>
-
-        <label for="yearGroup">Year Group:</label>
-        <input type="text" id="yearGroup" placeholder="Enter year group (e.g. 1, 2, 3, 4)">
-        <div class="error-message" id="yearGroup-error">This field is required</div>
-
-        <label for="cellNo">Cell No:</label>
-        <input type="text" id="cellNo" placeholder="Enter cell phone number">
-        <div class="error-message" id="cellNo-error">This field is required</div>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 20%">CODE</th>
-                <th style="width: 50%">DESCRIPTION</th>
-                <th style="width: 15%">QTY</th>
-                <th style="width: 10%"></th>
-            </tr>
-        </thead>
-        <tbody id="orderTable"></tbody>
-    </table>
-
-    <button class="add-row-btn" onclick="addRow()">+ Add Row</button>
-
-    <div class="button-group">
-        <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
-        <button class="share-btn" onclick="shareOrder()">&#128279; Share Order</button>
-        <button class="clear-btn" onclick="clearForm()">Clear All</button>
-    </div>
-
-    <!-- Year Group Suggestion Modal -->
-    <div class="modal-overlay" id="suggestion-modal">
-        <div class="modal-box">
-            <h2 id="modal-title"></h2>
-            <p class="modal-week" id="modal-week"></p>
-            <p class="modal-label">Recommended items to order this week:</p>
-            <ul id="modal-items"></ul>
-            <div class="modal-actions">
-                <button class="modal-apply-btn" onclick="applySuggestions()">&#10003; Auto-fill Order</button>
-                <button class="modal-dismiss-btn" onclick="closeSuggestionModal()">&#10006; Dismiss</button>
+    <!-- ── NAV BAR ── -->
+    <nav class="navbar">
+        <span class="nav-title">G&J BULK ORDER</span>
+        <div class="nav-icons">
+            <!-- Bell -->
+            <div class="bell-wrap">
+                <button class="nav-icon-btn" onclick="openNotifPopup()" title="Notifications">&#128276;</button>
+                <span class="notif-badge" id="notif-badge">1</span>
             </div>
+            <!-- Hamburger -->
+            <button class="nav-icon-btn" onclick="openDrawer()" title="Menu">&#9776;</button>
+        </div>
+    </nav>
+
+    <!-- ── SIDE DRAWER ── -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <h3>Menu</h3>
+            <button class="drawer-close" onclick="closeDrawer()">&#10005;</button>
+        </div>
+        <div class="drawer-body">
+
+            <!-- Dark mode toggle -->
+            <div class="drawer-toggle-row">
+                <span class="drawer-toggle-label">&#127769; Dark Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dark-switch" onchange="toggleDark(this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <!-- Notifications list -->
+            <div>
+                <p class="drawer-section-title">&#128276; Notifications</p>
+                <div class="notif-list" id="drawer-notif-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Download Alert Popup -->
-    <div class="share-popup" id="download-alert">
-        <div class="share-box">
-            <h2>&#10003; PDF Downloaded!</h2>
-            <p>Your order form is ready. Please send it to:</p>
-            <div class="share-email-row">
-                <span>Pta@gandj.co.za</span>
-                <button class="copy-btn" id="alert-copy-btn" onclick="copyAlertEmail()">Copy</button>
-            </div>
-            <p style="font-size:12px; color:var(--text-faint); margin-bottom:16px;">Attach the downloaded PDF when sending via email or WhatsApp.</p>
-            <button class="share-close-btn" onclick="document.getElementById('download-alert').style.display='none'">OK</button>
+    <!-- ── NOTIFICATION POPUP (bell click) ── -->
+    <div class="notif-popup-overlay" id="notif-popup-overlay">
+        <div class="notif-popup">
+            <div class="notif-popup-icon">&#128276;</div>
+            <h3 id="notif-popup-title"></h3>
+            <p class="notif-popup-msg" id="notif-popup-msg"></p>
+            <p class="notif-popup-meta" id="notif-popup-meta"></p>
+            <p class="notif-popup-countdown" id="notif-popup-countdown"></p>
+            <button class="notif-popup-ok" onclick="closeNotifPopup()">OK</button>
         </div>
     </div>
 
-    <!-- Share Popup (fallback for browsers without Web Share API) -->
-    <div class="share-popup" id="share-popup">
-        <div class="share-box">
-            <h2>&#10003; PDF Downloaded!</h2>
-            <p>Your order form has been saved. Copy the email address below and send your PDF to:</p>
-            <div class="share-email-row">
-                <span id="share-email-text">Pta@gandj.co.za</span>
-                <button class="copy-btn" id="copy-btn" onclick="copyEmail()">Copy</button>
-            </div>
-            <p style="font-size:12px; color:#999; margin-bottom:16px;">Open WhatsApp, Gmail, or any app — paste the address and attach your downloaded PDF.</p>
-            <button class="share-close-btn" onclick="closeSharePopup()">Done</button>
-        </div>
-    </div>
+    <!-- ── MAIN CONTENT ── -->
+    <div class="main-content">
+        <h1 id="page-title">BULK ORDER TUT STUDENT</h1>
 
-    <footer>
-        <p>Developed by <strong>Lwazi Mpangase</strong></p>
-        <p class="copyright">&copy; <span id="footer-year"></span> All Rights Reserved</p>
-    </footer>
+        <div class="form-section">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter your full name">
+            <div class="error-message" id="name-error">This field is required</div>
+
+            <label for="studentNo">Student No:</label>
+            <input type="text" id="studentNo" placeholder="Enter student number">
+            <div class="error-message" id="studentNo-error">This field is required</div>
+
+            <label for="yearGroup">Year Group:</label>
+            <input type="text" id="yearGroup" placeholder="Enter year group">
+            <div class="error-message" id="yearGroup-error">This field is required</div>
+
+            <label for="cellNo">Cell No:</label>
+            <input type="text" id="cellNo" placeholder="Enter cell phone number">
+            <div class="error-message" id="cellNo-error">This field is required</div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:20%">CODE</th>
+                    <th style="width:50%">DESCRIPTION</th>
+                    <th style="width:15%">QTY</th>
+                    <th style="width:10%"></th>
+                </tr>
+            </thead>
+            <tbody id="orderTable"></tbody>
+        </table>
+
+        <button class="add-row-btn" onclick="addRow()">+ Add Row</button>
+
+        <div class="button-group">
+            <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+            <button class="share-btn" onclick="shareOrder()">&#128279; Share Order</button>
+            <button class="clear-btn" onclick="clearForm()">Clear All</button>
+        </div>
+
+        <!-- Download Alert Popup -->
+        <div class="share-popup" id="download-alert">
+            <div class="share-box">
+                <h2>&#10003; PDF Downloaded!</h2>
+                <p>Your order form is ready. Please send it to:</p>
+                <div class="share-email-row">
+                    <span>Pta@gandj.co.za</span>
+                    <button class="copy-btn" id="alert-copy-btn" onclick="copyAlertEmail()">Copy</button>
+                </div>
+                <p style="font-size:12px;color:var(--text-faint);margin-bottom:16px;">Attach the downloaded PDF when sending via email or WhatsApp.</p>
+                <button class="share-close-btn" onclick="document.getElementById('download-alert').style.display='none'">OK</button>
+            </div>
+        </div>
+
+        <!-- Share Fallback Popup -->
+        <div class="share-popup" id="share-popup">
+            <div class="share-box">
+                <h2>&#10003; Ready to Share!</h2>
+                <p>Copy the email address below and send your PDF to:</p>
+                <div class="share-email-row">
+                    <span>Pta@gandj.co.za</span>
+                    <button class="copy-btn" id="copy-btn" onclick="copyEmail()">Copy</button>
+                </div>
+                <p style="font-size:12px;color:var(--text-faint);margin-bottom:16px;">Open WhatsApp, Gmail, or any app — paste the address and attach your downloaded PDF.</p>
+                <button class="share-close-btn" onclick="document.getElementById('share-popup').style.display='none'">Done</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>Developed by <strong>Lwazi Mpangase</strong></p>
+            <p class="copyright">&copy; <span id="footer-year"></span> All Rights Reserved</p>
+        </footer>
+    </div>
 
     <script>
-        // ── DARK MODE ─────────────────────────────────────────────────────────
-        function toggleDark() {
-            const isDark = document.body.classList.toggle('dark');
-            const btn = document.getElementById('dark-toggle');
-            btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
-            localStorage.setItem('darkMode', isDark ? '1' : '0');
+        // ── NOTIFICATIONS DATA ────────────────────────────────────────────────
+        // To add a new notification: add an object to this array.
+        // sentAt: ISO date string of when the message was sent
+        // targetDate: the date the event occurs (used for countdown)
+        const notifications = [
+            {
+                id: 1,
+                title: 'G&J Suppliers',
+                sender: 'G&J Suppliers',
+                message: 'Please note that all G&J items are expected to be received on Monday.',
+                sentAt: new Date().toISOString(),
+                targetDate: nextMonday(),
+                read: false
+            }
+        ];
+
+        function nextMonday() {
+            const d = new Date();
+            const day = d.getDay(); // 0=Sun,1=Mon,...
+            const daysUntil = (1 - day + 7) % 7 || 7; // days until next Monday
+            d.setDate(d.getDate() + daysUntil);
+            d.setHours(0, 0, 0, 0);
+            return d.toISOString();
         }
 
-        // Restore preference on load
+        function formatDateTime(isoStr) {
+            const d = new Date(isoStr);
+            return d.toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) +
+                   ' at ' + d.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function countdownText(targetIso) {
+            const now = new Date();
+            const target = new Date(targetIso);
+            target.setHours(23, 59, 59, 0); // all day
+            const diff = target - now;
+            if (diff <= 0) return 'Today — all day';
+            const days = Math.floor(diff / 86400000);
+            const hours = Math.floor((diff % 86400000) / 3600000);
+            if (days === 0) return 'Today — all day';
+            if (days === 1) return 'Tomorrow — all day';
+            return days + ' days to go (until ' + new Date(targetIso).toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long' }) + ')';
+        }
+
+        function unreadCount() {
+            return notifications.filter(function(n) { return !n.read; }).length;
+        }
+
+        function updateBadge() {
+            const badge = document.getElementById('notif-badge');
+            const count = unreadCount();
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function renderDrawerNotifications() {
+            const list = document.getElementById('drawer-notif-list');
+            list.innerHTML = '';
+            notifications.forEach(function(n) {
+                const card = document.createElement('div');
+                card.className = 'notif-card' + (n.read ? '' : ' unread');
+                card.innerHTML =
+                    '<p class="notif-msg">' + n.message + '</p>' +
+                    '<div class="notif-meta">' +
+                        '<span>From: ' + n.sender + '</span>' +
+                        '<span>Sent: ' + formatDateTime(n.sentAt) + '</span>' +
+                        '<span class="notif-countdown">' + countdownText(n.targetDate) + '</span>' +
+                    '</div>';
+                list.appendChild(card);
+            });
+        }
+
+        // ── NOTIFICATION POPUP (bell) ─────────────────────────────────────────
+        function openNotifPopup() {
+            const latest = notifications[notifications.length - 1];
+            document.getElementById('notif-popup-title').textContent = latest.title;
+            document.getElementById('notif-popup-msg').textContent = latest.message;
+            document.getElementById('notif-popup-meta').textContent = 'From: ' + latest.sender + '  |  Sent: ' + formatDateTime(latest.sentAt);
+            document.getElementById('notif-popup-countdown').textContent = countdownText(latest.targetDate);
+            document.getElementById('notif-popup-overlay').classList.add('open');
+            // Mark as read
+            latest.read = true;
+            updateBadge();
+            renderDrawerNotifications();
+        }
+
+        function closeNotifPopup() {
+            document.getElementById('notif-popup-overlay').classList.remove('open');
+        }
+
+        // ── DRAWER ────────────────────────────────────────────────────────────
+        function openDrawer() {
+            document.getElementById('drawer').classList.add('open');
+            document.getElementById('drawer-overlay').classList.add('open');
+            renderDrawerNotifications();
+        }
+
+        function closeDrawer() {
+            document.getElementById('drawer').classList.remove('open');
+            document.getElementById('drawer-overlay').classList.remove('open');
+        }
+
+        // ── DARK MODE ─────────────────────────────────────────────────────────
+        function toggleDark(on) {
+            document.body.classList.toggle('dark', on);
+            localStorage.setItem('darkMode', on ? '1' : '0');
+        }
+
         if (localStorage.getItem('darkMode') === '1') {
             document.body.classList.add('dark');
-            document.getElementById('dark-toggle').textContent = '☀️ Light';
+            document.getElementById('dark-switch').checked = true;
         }
 
-        // ── YEAR & WEEK HELPERS ───────────────────────────────────────────────
+        // ── YEAR ──────────────────────────────────────────────────────────────
         const currentYear = new Date().getFullYear();
         document.getElementById('page-title').textContent = 'BULK ORDER TUT STUDENT ' + currentYear;
         document.getElementById('footer-year').textContent = currentYear;
-
-        function currentWeekNumber() {
-            const now = new Date();
-            const start = new Date(now.getFullYear(), 0, 1);
-            const diff = now - start + (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60000;
-            return Math.floor(diff / 604800000) + 1;
-        }
-
-        function getWeekDateRange(weekNum) {
-            const jan1 = new Date(new Date().getFullYear(), 0, 1);
-            const weekStart = new Date(jan1.getTime() + (weekNum - 1) * 7 * 86400000);
-            const weekEnd = new Date(weekStart.getTime() + 6 * 86400000);
-            const fmt = d => d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
-            return fmt(weekStart) + ' - ' + fmt(weekEnd);
-        }
-
-        // ── PRODUCT LISTS (replace with real data when ready) ─────────────────
-        // Structure: yearGroupData['yearGroup'][{ week, items: [{code, description, qty}] }]
-        const thisWeek = currentWeekNumber();
-
-        const yearGroupData = {
-            '1': [
-                { week: thisWeek, items: [
-                    { code: 'Y1-001', description: 'A4 Sketchbook (80 pages)', qty: '2' },
-                    { code: 'Y1-002', description: 'Pencil Set (HB, 2B, 4B, 6B)', qty: '1' },
-                    { code: 'Y1-003', description: 'Eraser (Large)', qty: '2' },
-                    { code: 'Y1-004', description: 'Ruler 30cm', qty: '1' },
-                ]}
-            ],
-            '2': [
-                { week: thisWeek, items: [
-                    { code: 'Y2-001', description: 'A3 Drawing Paper Pack', qty: '1' },
-                    { code: 'Y2-002', description: 'Fine Liner Set (0.1-0.8mm)', qty: '1' },
-                    { code: 'Y2-003', description: 'Colour Pencils (24 pack)', qty: '1' },
-                    { code: 'Y2-004', description: 'Set Square', qty: '1' },
-                ]}
-            ],
-            '3': [
-                { week: thisWeek, items: [
-                    { code: 'Y3-001', description: 'Tracing Paper Roll', qty: '1' },
-                    { code: 'Y3-002', description: 'Technical Pen Set', qty: '1' },
-                    { code: 'Y3-003', description: 'Acrylic Paint Set (12 colours)', qty: '1' },
-                    { code: 'Y3-004', description: 'Canvas Board A3', qty: '2' },
-                ]}
-            ],
-            '4': [
-                { week: thisWeek, items: [
-                    { code: 'Y4-001', description: 'Portfolio Folder A2', qty: '1' },
-                    { code: 'Y4-002', description: 'Presentation Board', qty: '2' },
-                    { code: 'Y4-003', description: 'Spray Mount Adhesive', qty: '1' },
-                    { code: 'Y4-004', description: 'Cutting Mat A3', qty: '1' },
-                ]}
-            ],
-        };
-
-        let currentSuggestions = [];
-
-        // ── SUGGESTION MODAL ──────────────────────────────────────────────────
-        function checkYearGroupSuggestions() {
-            const input = document.getElementById('yearGroup').value.trim();
-            const week = currentWeekNumber();
-            const groupData = yearGroupData[input];
-            if (!groupData) return;
-
-            const weekData = groupData.find(function(w) { return w.week === week; });
-            if (!weekData) return;
-
-            currentSuggestions = weekData.items;
-
-            document.getElementById('modal-title').textContent = 'Year ' + input + ' - Week ' + week + ' Shopping List';
-            document.getElementById('modal-week').textContent = 'Week of ' + getWeekDateRange(week);
-
-            const ul = document.getElementById('modal-items');
-            ul.innerHTML = '';
-            weekData.items.forEach(function(item) {
-                const li = document.createElement('li');
-                li.textContent = item.description + ' (x' + item.qty + ') - ' + item.code;
-                ul.appendChild(li);
-            });
-
-            document.getElementById('suggestion-modal').style.display = 'block';
-        }
-
-        function applySuggestions() {
-            tableBody.innerHTML = '';
-            currentSuggestions.forEach(function(item) {
-                const row = createRow();
-                row.querySelector('.code').value = item.code;
-                row.querySelector('.description').value = item.description;
-                row.querySelector('.qty').value = item.qty;
-                tableBody.appendChild(row);
-            });
-            closeSuggestionModal();
-        }
-
-        function closeSuggestionModal() {
-            document.getElementById('suggestion-modal').style.display = 'none';
-        }
 
         // ── TABLE ─────────────────────────────────────────────────────────────
         const tableBody = document.getElementById('orderTable');
@@ -336,63 +468,36 @@
                 '<td><input type="text" class="code" placeholder="Code"></td>' +
                 '<td><input type="text" class="description" placeholder="Description"></td>' +
                 '<td><input type="text" class="qty" placeholder="Qty"></td>' +
-                '<td><button class="remove-btn" onclick="removeRow(this)">x</button></td>';
+                '<td><button class="remove-btn" onclick="removeRow(this)">&#215;</button></td>';
             return row;
         }
 
         function addRow() { tableBody.appendChild(createRow()); }
         function removeRow(btn) { btn.closest('tr').remove(); }
 
-        // ── SHARED VALIDATION ─────────────────────────────────────────────────
+        // ── VALIDATION ────────────────────────────────────────────────────────
         function validateForm() {
             document.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
             document.querySelectorAll('.error-message').forEach(function(el) { el.classList.remove('show'); });
-
             let hasError = false;
-
-            const name = document.getElementById('name').value.trim();
-            const studentNo = document.getElementById('studentNo').value.trim();
-            const yearGroup = document.getElementById('yearGroup').value.trim();
-            const cellNo = document.getElementById('cellNo').value.trim();
-
-            if (!name) { document.getElementById('name').classList.add('error'); document.getElementById('name-error').classList.add('show'); hasError = true; }
-            if (!studentNo) { document.getElementById('studentNo').classList.add('error'); document.getElementById('studentNo-error').classList.add('show'); hasError = true; }
-            if (!yearGroup) { document.getElementById('yearGroup').classList.add('error'); document.getElementById('yearGroup-error').classList.add('show'); hasError = true; }
-            if (!cellNo) { document.getElementById('cellNo').classList.add('error'); document.getElementById('cellNo-error').classList.add('show'); hasError = true; }
-
-            const rows = tableBody.querySelectorAll('tr');
-            let hasCompleteRow = false;
-
-            rows.forEach(function(row) {
-                const codeInput = row.querySelector('.code');
-                const descInput = row.querySelector('.description');
-                const qtyInput = row.querySelector('.qty');
-                const code = codeInput.value.trim();
-                const desc = descInput.value.trim();
-                const qty = qtyInput.value.trim();
-
-                if (code || desc || qty) {
-                    if (code && desc && qty) {
-                        hasCompleteRow = true;
-                    } else {
-                        if (!code) codeInput.classList.add('error');
-                        if (!desc) descInput.classList.add('error');
-                        if (!qty) qtyInput.classList.add('error');
-                        hasError = true;
-                    }
+            ['name','studentNo','yearGroup','cellNo'].forEach(function(id) {
+                if (!document.getElementById(id).value.trim()) {
+                    document.getElementById(id).classList.add('error');
+                    document.getElementById(id + '-error').classList.add('show');
+                    hasError = true;
                 }
             });
-
-            if (!hasCompleteRow) {
-                alert('Please add at least one complete order item.');
-                hasError = true;
-            }
-
-            if (hasError) {
-                const firstError = document.querySelector('.error');
-                if (firstError) { firstError.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstError.focus(); }
-                return false;
-            }
+            let hasCompleteRow = false;
+            tableBody.querySelectorAll('tr').forEach(function(row) {
+                const c = row.querySelector('.code'), d = row.querySelector('.description'), q = row.querySelector('.qty');
+                const cv = c.value.trim(), dv = d.value.trim(), qv = q.value.trim();
+                if (cv || dv || qv) {
+                    if (cv && dv && qv) { hasCompleteRow = true; }
+                    else { if (!cv) c.classList.add('error'); if (!dv) d.classList.add('error'); if (!qv) q.classList.add('error'); hasError = true; }
+                }
+            });
+            if (!hasCompleteRow) { alert('Please add at least one complete order item.'); hasError = true; }
+            if (hasError) { const fe = document.querySelector('.error'); if (fe) { fe.scrollIntoView({behavior:'smooth',block:'center'}); fe.focus(); } return false; }
             return true;
         }
 
@@ -401,125 +506,82 @@
             if (!validateForm()) return;
             generatePDFBlob(function(pdfBlob, filename) {
                 if (navigator.canShare && navigator.canShare({ files: [new File([pdfBlob], filename, { type: 'application/pdf' })] })) {
-                    const file = new File([pdfBlob], filename, { type: 'application/pdf' });
                     navigator.share({
                         title: 'Bulk Order - ' + document.getElementById('name').value.trim(),
-                        text: 'Please find my bulk order attached. Send to: Pta@gandj.co.za',
-                        files: [file]
+                        text: 'Please find my order form attached.',
+                        files: [new File([pdfBlob], filename, { type: 'application/pdf' })]
                     }).catch(function(err) {
-                        if (err.name !== 'AbortError') {
-                            alert('Sharing failed. Please share the downloaded PDF manually to Pta@gandj.co.za');
-                        }
+                        if (err.name !== 'AbortError') alert('Sharing failed. Please share the downloaded PDF manually to Pta@gandj.co.za');
                     });
                 } else {
-                    // Fallback: download and show the share popup
                     const url = URL.createObjectURL(pdfBlob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    a.click();
+                    const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
                     URL.revokeObjectURL(url);
                     document.getElementById('share-popup').style.display = 'block';
                 }
             }, true);
         }
 
-        function copyEmail() {
-            copyToClipboard('Pta@gandj.co.za', 'copy-btn');
-        }
-
-        function copyAlertEmail() {
-            copyToClipboard('Pta@gandj.co.za', 'alert-copy-btn');
-        }
-
+        // ── COPY HELPERS ──────────────────────────────────────────────────────
+        function copyEmail() { copyToClipboard('Pta@gandj.co.za', 'copy-btn'); }
+        function copyAlertEmail() { copyToClipboard('Pta@gandj.co.za', 'alert-copy-btn'); }
         function copyToClipboard(text, btnId) {
             const btn = document.getElementById(btnId);
             navigator.clipboard.writeText(text).then(function() {
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
+                btn.textContent = 'Copied!'; btn.classList.add('copied');
                 setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
             }).catch(function() {
-                const el = document.createElement('textarea');
-                el.value = text;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
+                const el = document.createElement('textarea'); el.value = text;
+                document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+                btn.textContent = 'Copied!'; btn.classList.add('copied');
                 setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
             });
         }
 
-        function closeSharePopup() {
-            document.getElementById('share-popup').style.display = 'none';
-        }
-
-        // ── GENERATE PDF (shared by downloadPDF and shareOrder) ───────────────
-        // returnBlob=true → calls onComplete(blob, filename) instead of saving
+        // ── GENERATE PDF ──────────────────────────────────────────────────────
         function generatePDFBlob(onComplete, returnBlob) {
             const studentNo = document.getElementById('studentNo').value.trim();
             const filename = 'Bulk_Order_' + studentNo + '_' + new Date().toISOString().split('T')[0] + '.pdf';
-
             const emptyRows = [];
             tableBody.querySelectorAll('tr').forEach(function(row) {
-                const code = row.querySelector('.code').value.trim();
-                const desc = row.querySelector('.description').value.trim();
-                const qty = row.querySelector('.qty').value.trim();
-                if (!code && !desc && !qty) {
-                    emptyRows.push(row);
-                    row.style.display = 'none';
-                }
+                const c = row.querySelector('.code').value.trim();
+                const d = row.querySelector('.description').value.trim();
+                const q = row.querySelector('.qty').value.trim();
+                if (!c && !d && !q) { emptyRows.push(row); row.style.display = 'none'; }
             });
-
+            const navbar = document.querySelector('.navbar');
             const buttons = document.querySelectorAll('button');
             const footer = document.querySelector('footer');
             const buttonGroup = document.querySelector('.button-group');
+            if (navbar) navbar.style.display = 'none';
             buttons.forEach(function(btn) { btn.style.display = 'none'; });
             if (footer) footer.style.display = 'none';
             if (buttonGroup) buttonGroup.style.display = 'none';
 
             const jsPDF = window.jspdf.jsPDF;
-            const originalMaxWidth = document.body.style.maxWidth;
-            const originalPadding = document.body.style.padding;
-            const originalMargin = document.body.style.margin;
-            document.body.style.maxWidth = '750px';
-            document.body.style.padding = '20px';
-            document.body.style.margin = '0 auto';
+            const ob = document.body.style;
+            const [omw, op, om] = [ob.maxWidth, ob.padding, ob.margin];
+            ob.maxWidth = '750px'; ob.padding = '20px'; ob.margin = '0 auto';
 
             html2canvas(document.body, { scale: 2, useCORS: true, logging: false, width: 750, windowWidth: 750, x: 0, y: 0 }).then(function(canvas) {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const pdfWidth = 210, pdfHeight = 297, margin = 15;
-                const contentWidth = pdfWidth - 2 * margin;
-                const contentHeight = (canvas.height * contentWidth) / canvas.width;
-                pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight, '', 'FAST');
-                let remainingHeight = contentHeight - (pdfHeight - 2 * margin);
-                while (remainingHeight > 0) {
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', margin, -(contentHeight - remainingHeight) + margin, contentWidth, contentHeight, '', 'FAST');
-                    remainingHeight -= (pdfHeight - 2 * margin);
-                }
+                const pdfW = 210, pdfH = 297, mg = 15;
+                const cw = pdfW - 2 * mg;
+                const ch = (canvas.height * cw) / canvas.width;
+                pdf.addImage(imgData, 'PNG', mg, mg, cw, ch, '', 'FAST');
+                let rem = ch - (pdfH - 2 * mg);
+                while (rem > 0) { pdf.addPage(); pdf.addImage(imgData, 'PNG', mg, -(ch - rem) + mg, cw, ch, '', 'FAST'); rem -= (pdfH - 2 * mg); }
                 restore();
-                if (returnBlob) {
-                    // Return blob to caller (used by shareOrder)
-                    const blob = pdf.output('blob');
-                    if (onComplete) onComplete(blob, filename);
-                } else {
-                    // Save directly (used by downloadPDF)
-                    pdf.save(filename);
-                    if (onComplete) onComplete();
-                }
+                if (returnBlob) { if (onComplete) onComplete(pdf.output('blob'), filename); }
+                else { pdf.save(filename); if (onComplete) onComplete(); }
             }).catch(function(err) {
-                console.error('Error generating PDF:', err);
-                alert('Error generating PDF. Please try again.');
-                restore();
+                console.error(err); alert('Error generating PDF. Please try again.'); restore();
             });
 
             function restore() {
-                document.body.style.maxWidth = originalMaxWidth;
-                document.body.style.padding = originalPadding;
-                document.body.style.margin = originalMargin;
+                ob.maxWidth = omw; ob.padding = op; ob.margin = om;
+                if (navbar) navbar.style.display = '';
                 buttons.forEach(function(btn) { btn.style.display = ''; });
                 if (footer) footer.style.display = '';
                 if (buttonGroup) buttonGroup.style.display = '';
@@ -531,7 +593,6 @@
         function downloadPDF() {
             if (!validateForm()) return;
             generatePDFBlob(function() {
-                // Show email alert after download
                 document.getElementById('download-alert').style.display = 'block';
             }, false);
         }
@@ -539,10 +600,7 @@
         // ── CLEAR FORM ────────────────────────────────────────────────────────
         function clearForm() {
             if (confirm('Are you sure you want to clear all fields?')) {
-                document.getElementById('name').value = '';
-                document.getElementById('studentNo').value = '';
-                document.getElementById('yearGroup').value = '';
-                document.getElementById('cellNo').value = '';
+                ['name','studentNo','yearGroup','cellNo'].forEach(function(id) { document.getElementById(id).value = ''; });
                 document.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
                 document.querySelectorAll('.error-message').forEach(function(el) { el.classList.remove('show'); });
                 tableBody.innerHTML = '';
@@ -551,16 +609,14 @@
 
         // ── EVENT LISTENERS ───────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
-            // Remove error styling on input
             document.querySelectorAll('input[type="text"]').forEach(function(input) {
                 input.addEventListener('input', function() {
                     this.classList.remove('error');
-                    const errorMsg = document.getElementById(this.id + '-error');
-                    if (errorMsg) errorMsg.classList.remove('show');
+                    const em = document.getElementById(this.id + '-error');
+                    if (em) em.classList.remove('show');
                 });
             });
-            // Trigger suggestion popup when user leaves year group field
-            document.getElementById('yearGroup').addEventListener('blur', checkYearGroupSuggestions);
+            updateBadge();
         });
     </script>
 </body>
