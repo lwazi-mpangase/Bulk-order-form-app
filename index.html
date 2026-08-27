@@ -211,7 +211,7 @@
 
     <!-- ── NAV BAR ── -->
     <nav class="navbar">
-        <span class="nav-title">BULK ORDER FORM</span>
+        <span class="nav-title">G&J BULK ORDER</span>
         <div class="nav-icons">
             <!-- Bell -->
             <div class="bell-wrap">
@@ -302,7 +302,7 @@
 
         <div class="button-group">
             <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
-            <button class="share-btn" onclick="shareOrder()">&#128279; Share</button>
+            <button class="share-btn" onclick="shareOrder()">&#128279; Share Order</button>
             <button class="clear-btn" onclick="clearForm()">Clear All</button>
         </div>
 
@@ -563,6 +563,9 @@
             const [omw, op, om] = [ob.maxWidth, ob.padding, ob.margin];
             ob.maxWidth = '750px'; ob.padding = '20px'; ob.margin = '0 auto';
 
+            const wasDark = document.body.classList.contains('dark');
+            if (wasDark) document.body.classList.remove('dark');
+
             html2canvas(document.body, { scale: 2, useCORS: true, logging: false, width: 750, windowWidth: 750, x: 0, y: 0 }).then(function(canvas) {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
@@ -581,6 +584,7 @@
 
             function restore() {
                 ob.maxWidth = omw; ob.padding = op; ob.margin = om;
+                if (wasDark) document.body.classList.add('dark');
                 if (navbar) navbar.style.display = '';
                 buttons.forEach(function(btn) { btn.style.display = ''; });
                 if (footer) footer.style.display = '';
